@@ -16,3 +16,23 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+
+require __DIR__ . '/auth.php';
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::group(['namespace' => 'App\Http\Controllers'], function () {
+        // Route::get('/users', 'UserController@index');
+        Route::resource('users', 'UserController');
+        Route::resource('roles', 'RoleController');
+        Route::resource('products', 'ProductController');
+    });
+});
